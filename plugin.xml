@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<plugin>
+   <class>com.feinfone.apns.ApnsPlugin</class>
+   <name>Feinfone APNS</name>
+   <description>Feinfine's Apple Push Notifications plugin</description>
+   <author>Nikola Sobadjiev</author>
+   <version>4.2.1-SNAPSHOT</version>
+   <date>2017-12-15</date>
+   <minServerVersion>4.0.0</minServerVersion>
+    <!-- And if it won't work after:
+   <maxServerVersion>4.3.0</maxServerVersion>
+   -->
+
+   <adminconsole>
+      <tab id="tab-server">
+         <sidebar id="sidebar-server-settings">
+            <item id="apns-settings" name="APNS Settings" url="apns.jsp" description="Click to manage the apns certificate" />
+         </sidebar>
+      </tab>
+   </adminconsole>
+</plugin>
