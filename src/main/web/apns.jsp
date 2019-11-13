@@ -31,9 +31,9 @@
         plugin.setProduction(production);
 
         try {
-            List<FileItem> multiparts = new ServletFileUpload(new DiskFileItemFactory()).parseRequest(request);
+            List<FileItem> multiParts = new ServletFileUpload(new DiskFileItemFactory()).parseRequest(request);
 
-            for (FileItem item : multiparts) {
+            for (FileItem item : multiParts) {
                 if (!item.isFormField()) {
                     String filename = item.getName();
                     item.write(new File(ApnsPlugin.keystorePath()));
@@ -79,7 +79,7 @@
 
 <div class="jive-contentBoxHeader">APNS certificate</div>
 <div class="jive-contentBox">
-    <label for="file">p12 certificate:</label>
+    <label for="file">p8 key:</label>
     <input type="file" name="file" />
     <br>
 

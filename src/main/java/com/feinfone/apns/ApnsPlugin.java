@@ -37,7 +37,10 @@ public class ApnsPlugin implements Plugin, PacketInterceptor {
     }
 
     public static String keystorePath() {
-        return "./authKey.p8";
+        // Here, it's assumed that /usr/local/openfire/ exists and
+        // its permissions allow writing into the folder
+        // This might not be true for all installations
+        return "/usr/local/openfire/authKey.p8";
     }
 
     public void setTeamId(String teamId) {
