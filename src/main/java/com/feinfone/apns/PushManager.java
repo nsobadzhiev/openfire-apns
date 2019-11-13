@@ -3,6 +3,7 @@ package com.feinfone.apns;
 import com.turo.pushy.apns.ApnsClient;
 import com.turo.pushy.apns.ApnsClientBuilder;
 import com.turo.pushy.apns.PushNotificationResponse;
+import com.turo.pushy.apns.auth.ApnsSigningKey;
 import com.turo.pushy.apns.util.ApnsPayloadBuilder;
 import com.turo.pushy.apns.util.SimpleApnsPushNotification;
 import com.turo.pushy.apns.util.TokenUtil;
@@ -13,6 +14,8 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 
 enum PushEnvironment {
     STAGE,
@@ -25,10 +28,15 @@ public class PushManager {
 
     private ApnsClient pushClient = null;
 
-    public PushManager(String pathToCertificate, String certPassword, PushEnvironment env) throws IOException {
+    public PushManager(
+            String pathToCertificate,
+            String teamId,
+            String keyId,
+            PushEnvironment env) throws IOException, InvalidKeyException, NoSuchAlgorithmException {
         pushClient = new ApnsClientBuilder()
-                .setApnsServer(ApnsClientBuilder.DEVELOPMENT_APNS_HOST)
-                .setClientCredentials(new File("/path/to/certificate.p12"), "p12-file-password")
+                .setApnsServer(hostForEnvironment(env))
+                .setSigningKey(ApnsSigningKey.loadFromPkcs8File(new File(pathToCertificate),
+                        teamId, keyId))
                 .build();
     }
 
