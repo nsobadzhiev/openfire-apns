@@ -18,6 +18,8 @@ import org.xmpp.packet.Packet;
 
 import java.io.File;
 import java.io.IOException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
 
@@ -35,15 +37,23 @@ public class ApnsPlugin implements Plugin, PacketInterceptor {
     }
 
     public static String keystorePath() {
-        return "./keystore.p12";
+        return "./authKey.p8";
     }
 
-    public void setPassword(String password) {
-        JiveGlobals.setProperty("plugin.apns.password", password);
+    public void setTeamId(String teamId) {
+        JiveGlobals.setProperty("plugin.apns.teamId", teamId);
     }
 
-    public String getPassword() {
-        return JiveGlobals.getProperty("plugin.apns.password", "");
+    public String getTeamId() {
+        return JiveGlobals.getProperty("plugin.apns.teamId", "");
+    }
+
+    public void setKeyId(String keyId) {
+        JiveGlobals.setProperty("plugin.apns.keyId", keyId);
+    }
+
+    public String getKeyId() {
+        return JiveGlobals.getProperty("plugin.apns.keyId", "");
     }
 
     public void setBadge(String badge) {
@@ -77,9 +87,15 @@ public class ApnsPlugin implements Plugin, PacketInterceptor {
         IQRouter iqRouter = XMPPServer.getInstance().getIQRouter();
         iqRouter.addHandler(myHandler);
         try {
-            pushManager = new PushManager(keystorePath(), getPassword(), PushEnvironment.STAGE);
+            pushManager = new PushManager(keystorePath(), getTeamId(), getKeyId(), PushEnvironment.STAGE);
         } catch (IOException e) {
             log.error("Unable to create push manager");
+            e.printStackTrace();
+        } catch (InvalidKeyException e) {
+            log.error("The key is invalid");
+            e.printStackTrace();
+        } catch (NoSuchAlgorithmException e) {
+            log.error("No such algorithm");
             e.printStackTrace();
         }
     }

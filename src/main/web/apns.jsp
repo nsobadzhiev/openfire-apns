@@ -14,7 +14,8 @@
     boolean save = request.getParameter("save") != null;
     boolean success = request.getParameter("success") != null;
     boolean error = request.getParameter("error") != null;
-    String password = ParamUtils.getParameter(request, "password");
+    String teamId = ParamUtils.getParameter(request, "teamId");
+    String keyId = ParamUtils.getParameter(request, "keyId");
     String badge = ParamUtils.getParameter(request, "badge");
     String sound = ParamUtils.getParameter(request, "sound");
     String production = ParamUtils.getParameter(request, "production");
@@ -23,7 +24,8 @@
 
     // Handle a save
     if (save) {
-        plugin.setPassword(password);
+        plugin.setKeyId(teamId);
+        plugin.setTeamId(teamId);
         plugin.setBadge(badge);
         plugin.setSound(sound);
         plugin.setProduction(production);
@@ -46,7 +48,8 @@
 
     }
 
-    password = plugin.getPassword();
+    teamId = plugin.getTeamId();
+    keyId = plugin.getKeyId();
     badge = Integer.toString(plugin.getBadge());
     sound = plugin.getSound();
     production = plugin.getProduction() ? "true" : "false";
@@ -80,8 +83,12 @@
     <input type="file" name="file" />
     <br>
 
-    <label for="password">certificate password:</label>
-    <input type="password" name="password" value="<%= password %>" />
+    <label for="teamId">Team ID:</label>
+    <input type="password" name="teamId" value="<%= teamId %>" />
+    <br>
+
+    <label for="keyId">Key ID:</label>
+    <input type="password" name="keyId" value="<%= keyId %>" />
     <br>
 
     <label for="badge">payload badge</label>
