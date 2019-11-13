@@ -2,6 +2,7 @@ package com.feinfone.apns;
 
 import com.turo.pushy.apns.ApnsClient;
 import com.turo.pushy.apns.ApnsClientBuilder;
+import com.turo.pushy.apns.ApnsPushNotification;
 import com.turo.pushy.apns.PushNotificationResponse;
 import com.turo.pushy.apns.auth.ApnsSigningKey;
 import com.turo.pushy.apns.util.ApnsPayloadBuilder;
@@ -26,23 +27,26 @@ public class PushManager {
 
     private static final Logger log = LoggerFactory.getLogger(PushManager.class);
 
-    private ApnsClient pushClient = null;
+    private ApnsClient pushClient;
+    private String pushTopic;
 
     public PushManager(
             String pathToCertificate,
             String teamId,
             String keyId,
+            String topic,
             PushEnvironment env) throws IOException, InvalidKeyException, NoSuchAlgorithmException {
         pushClient = new ApnsClientBuilder()
                 .setApnsServer(hostForEnvironment(env))
                 .setSigningKey(ApnsSigningKey.loadFromPkcs8File(new File(pathToCertificate),
                         teamId, keyId))
                 .build();
+        pushTopic = topic;
     }
 
     public void sendPush(String message, int badgeNumber, String soundName, String token) {
         final ApnsPayloadBuilder payloadBuilder = new ApnsPayloadBuilder();
-        payloadBuilder.setAlertBody("Example!")
+        payloadBuilder.setAlertBody(message)
         .setBadgeNumber(badgeNumber)
         .setSound(soundName);
 
@@ -50,10 +54,15 @@ public class PushManager {
         final String sanitizedToken = TokenUtil.sanitizeTokenString(token);
 
         SimpleApnsPushNotification pushNotification = new SimpleApnsPushNotification(sanitizedToken,
-                "com.example.myApp", payload);
+                pushTopic, payload);
         // TODO: look at the response
+        sendPush(pushNotification);
+
+    }
+
+    private void sendPush(SimpleApnsPushNotification notification) {
         final PushNotificationFuture<SimpleApnsPushNotification, PushNotificationResponse<SimpleApnsPushNotification>> pushFuture =
-                pushClient.sendNotification(pushNotification);
+                pushClient.sendNotification(notification);
         pushFuture.addListener(new PushNotificationResponseListener<SimpleApnsPushNotification>() {
 
             @Override

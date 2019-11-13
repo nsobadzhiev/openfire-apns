@@ -16,6 +16,7 @@
     boolean error = request.getParameter("error") != null;
     String teamId = ParamUtils.getParameter(request, "teamId");
     String keyId = ParamUtils.getParameter(request, "keyId");
+    String topic = ParamUtils.getParameter(request, "topic");
     String badge = ParamUtils.getParameter(request, "badge");
     String sound = ParamUtils.getParameter(request, "sound");
     String production = ParamUtils.getParameter(request, "production");
@@ -26,6 +27,7 @@
     if (save) {
         plugin.setKeyId(teamId);
         plugin.setTeamId(teamId);
+        plugin.setTopic(topic);
         plugin.setBadge(badge);
         plugin.setSound(sound);
         plugin.setProduction(production);
@@ -50,6 +52,7 @@
 
     teamId = plugin.getTeamId();
     keyId = plugin.getKeyId();
+    topic = plugin.getTopic();
     badge = Integer.toString(plugin.getBadge());
     sound = plugin.getSound();
     production = plugin.getProduction() ? "true" : "false";
@@ -84,11 +87,15 @@
     <br>
 
     <label for="teamId">Team ID:</label>
-    <input type="password" name="teamId" value="<%= teamId %>" />
+    <input type="text" name="teamId" value="<%= teamId %>" />
     <br>
 
     <label for="keyId">Key ID:</label>
-    <input type="password" name="keyId" value="<%= keyId %>" />
+    <input type="text" name="keyId" value="<%= keyId %>" />
+    <br>
+
+    <label for="topic">Topic:</label>
+    <input type="text" name="topic" value="<%= topic %>" />
     <br>
 
     <label for="badge">payload badge</label>

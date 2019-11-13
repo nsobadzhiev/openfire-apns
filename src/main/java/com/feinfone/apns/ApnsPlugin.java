@@ -59,6 +59,14 @@ public class ApnsPlugin implements Plugin, PacketInterceptor {
         return JiveGlobals.getProperty("plugin.apns.keyId", "");
     }
 
+    public void setTopic(String keyId) {
+        JiveGlobals.setProperty("plugin.apns.topic", keyId);
+    }
+
+    public String getTopic() {
+        return JiveGlobals.getProperty("plugin.apns.topic", "");
+    }
+
     public void setBadge(String badge) {
         JiveGlobals.setProperty("plugin.apns.badge", badge);
     }
@@ -90,7 +98,7 @@ public class ApnsPlugin implements Plugin, PacketInterceptor {
         IQRouter iqRouter = XMPPServer.getInstance().getIQRouter();
         iqRouter.addHandler(myHandler);
         try {
-            pushManager = new PushManager(keystorePath(), getTeamId(), getKeyId(), PushEnvironment.STAGE);
+            pushManager = new PushManager(keystorePath(), getTeamId(), getKeyId(), getTopic(), PushEnvironment.STAGE);
         } catch (IOException e) {
             log.error("Unable to create push manager");
             e.printStackTrace();
