@@ -97,18 +97,6 @@ public class ApnsPlugin implements Plugin, PacketInterceptor {
         IQHandler myHandler = new ApnsIQHandler();
         IQRouter iqRouter = XMPPServer.getInstance().getIQRouter();
         iqRouter.addHandler(myHandler);
-        try {
-            pushManager = new PushManager(keystorePath(), getTeamId(), getKeyId(), getTopic(), PushEnvironment.STAGE);
-        } catch (IOException e) {
-            log.error("Unable to create push manager");
-            e.printStackTrace();
-        } catch (InvalidKeyException e) {
-            log.error("The key is invalid");
-            e.printStackTrace();
-        } catch (NoSuchAlgorithmException e) {
-            log.error("No such algorithm");
-            e.printStackTrace();
-        }
     }
 
     public void destroyPlugin() {
@@ -133,7 +121,7 @@ public class ApnsPlugin implements Plugin, PacketInterceptor {
                     String deviceToken = dbManager.getDeviceToken(targetJID);
                     if (deviceToken == null) return;
 
-                    pushManager.sendPush(payloadString, getBadge(), getSound(), deviceToken);
+                    sendPush(payloadString, getBadge(), getSound(), deviceToken);
                 } else if (receivedMessage.getType() == Message.Type.groupchat) {
                     JID sourceJID = receivedMessage.getFrom();
                     JID targetJID = receivedMessage.getTo();
@@ -145,10 +133,37 @@ public class ApnsPlugin implements Plugin, PacketInterceptor {
 
                     List<String> deviceTokens = dbManager.getDeviceTokens(roomName);
                     for (String token : deviceTokens) {
-                        pushManager.sendPush(payloadString, getBadge(), getSound(), token);
+                        sendPush(payloadString, getBadge(), getSound(), token);
                     }
                 }
             }
+        }
+    }
+
+    private PushManager getPushManager() {
+        if (pushManager != null) {
+            try {
+                pushManager = new PushManager(keystorePath(), getTeamId(), getKeyId(), getTopic(), PushEnvironment.STAGE);
+            } catch (IOException e) {
+                log.error("Unable to create push manager");
+                e.printStackTrace();
+            } catch (InvalidKeyException e) {
+                log.error("The key is invalid");
+                e.printStackTrace();
+            } catch (NoSuchAlgorithmException e) {
+                log.error("No such algorithm");
+                e.printStackTrace();
+            }
+        }
+        return pushManager;
+    }
+
+    public void sendPush(String message, int badgeNumber, String soundName, String token) {
+        PushManager manager = getPushManager();
+        if (manager != null) {
+            manager.sendPush(message, badgeNumber, soundName, token);
+        } else {
+            log.error("No configured push manager. Not sending push message");
         }
     }
 
