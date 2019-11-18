@@ -2,7 +2,6 @@ package com.feinfone.apns;
 
 import com.turo.pushy.apns.ApnsClient;
 import com.turo.pushy.apns.ApnsClientBuilder;
-import com.turo.pushy.apns.ApnsPushNotification;
 import com.turo.pushy.apns.PushNotificationResponse;
 import com.turo.pushy.apns.auth.ApnsSigningKey;
 import com.turo.pushy.apns.util.ApnsPayloadBuilder;
@@ -75,6 +74,8 @@ public class PushManager {
                             pushFuture.getNow();
 
                     log.info("Push message sent successfully");
+                    log.info("Accepted: {}", pushNotificationResponse.isAccepted());
+                    log.info("Rejection reason: {}", pushNotificationResponse.getRejectionReason());
                 } else {
                     // Something went wrong when trying to send the notification to the
                     // APNs gateway. We can find the exception that caused the failure

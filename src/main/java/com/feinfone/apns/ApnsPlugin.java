@@ -141,7 +141,7 @@ public class ApnsPlugin implements Plugin, PacketInterceptor {
     }
 
     private PushManager getPushManager() {
-        if (pushManager != null) {
+        if (pushManager == null) {
             try {
                 pushManager = new PushManager(keystorePath(), getTeamId(), getKeyId(), getTopic(), PushEnvironment.STAGE);
             } catch (IOException e) {

@@ -25,7 +25,7 @@
 
     // Handle a save
     if (save) {
-        plugin.setKeyId(teamId);
+        plugin.setKeyId(keyId);
         plugin.setTeamId(teamId);
         plugin.setTopic(topic);
         plugin.setBadge(badge);
