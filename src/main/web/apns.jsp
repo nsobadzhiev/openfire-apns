@@ -12,6 +12,7 @@
 
 <%  // Get parameters
     boolean save = request.getParameter("save") != null;
+    boolean upload = request.getParameter("upload") != null;
     boolean success = request.getParameter("success") != null;
     boolean error = request.getParameter("error") != null;
     String teamId = ParamUtils.getParameter(request, "teamId");
@@ -31,7 +32,11 @@
         plugin.setBadge(badge);
         plugin.setSound(sound);
         plugin.setProduction(production);
+        response.sendRedirect("apns.jsp?success=true");
+    }
 
+    // Handle an upload
+    if (upload) {
         try {
             List<FileItem> multiParts = new ServletFileUpload(new DiskFileItemFactory()).parseRequest(request);
 
@@ -47,7 +52,6 @@
             response.sendRedirect("apns.jsp?error=true");
             return;
         }
-
     }
 
     teamId = plugin.getTeamId();
@@ -78,37 +82,43 @@
     </div><br>
 <% } %>
 
-<form action="apns.jsp?save" method="post" enctype="multipart/form-data">
+<form action="apns.jsp?upload" method="post" enctype="multipart/form-data">
 
 <div class="jive-contentBoxHeader">APNS certificate</div>
 <div class="jive-contentBox">
     <label for="file">p8 key:</label>
     <input type="file" name="file" />
-    <br>
+</div>
+<input type="submit" value="Upload">
+</form>
 
+<form action="apns.jsp?save" method="post">
+
+<div class="jive-contentBoxHeader">APNS params</div>
+<div class="jive-contentBox">
     <label for="teamId">Team ID:</label>
-    <input type="text" name="teamId" value="<%= teamId %>" />
+    <input type="text" name="teamId" value="${teamId}" />
     <br>
 
     <label for="keyId">Key ID:</label>
-    <input type="text" name="keyId" value="<%= keyId %>" />
+    <input type="text" name="keyId" value="${keyId}" />
     <br>
 
     <label for="topic">Topic:</label>
-    <input type="text" name="topic" value="<%= topic %>" />
+    <input type="text" name="topic" value="${topic}" />
     <br>
 
     <label for="badge">payload badge</label>
-    <input type="badge" name="badge" value="<%= badge %>" />
+    <input type="badge" name="badge" value="${badge}" />
     <br>
 
     <label for="sound">payload sound</label>
-    <input type="badge" name="sound" value="<%= sound %>" />
+    <input type="badge" name="sound" value="${sound}" />
     <br>
 
     <label for="production">sandbox or production</label>
-    <input type="radio" name="production" value="false" <%= production.equals("true") ? "" : "checked" %>>Sandbox
-    <input type="radio" name="production" value="true" <%= production.equals("true") ? "checked" : "" %>>Production
+    <input type="radio" name="production" value="false" ${production.equals("true") ? "" : "checked"}>Sandbox
+    <input type="radio" name="production" value="true" ${production.equals("true") ? "checked" : ""}>Production
 </div>
 <input type="submit" value="Save">
 </form>
