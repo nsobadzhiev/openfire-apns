@@ -88,7 +88,7 @@ public class ApnsPlugin implements Plugin, PacketInterceptor {
     }
 
     public boolean getProduction() {
-        return Boolean.parseBoolean(JiveGlobals.getProperty("plugin.apns.badge", "false"));
+        return Boolean.parseBoolean(JiveGlobals.getProperty("plugin.apns.production", "false"));
     }
 
     public void initializePlugin(PluginManager pManager, File pluginDirectory) {
@@ -143,7 +143,8 @@ public class ApnsPlugin implements Plugin, PacketInterceptor {
     private PushManager getPushManager() {
         if (pushManager == null) {
             try {
-                pushManager = new PushManager(keystorePath(), getTeamId(), getKeyId(), getTopic(), PushEnvironment.STAGE);
+                PushEnvironment env = getProduction() ? PushEnvironment.PRODUCTION : PushEnvironment.STAGE;
+                pushManager = new PushManager(keystorePath(), getTeamId(), getKeyId(), getTopic(), env);
             } catch (IOException e) {
                 log.error("Unable to create push manager");
                 e.printStackTrace();
